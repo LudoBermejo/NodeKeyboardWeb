@@ -16,7 +16,7 @@
     array["click"] = 'sounds/trollolol.swf.mp3';
 
 
-    var keyboard = io.connect('http://localhost:9000')
+    var keyboard = io.connect('http://ludobermejo.es:9100')
 
     keyboard.on('keypressed', function(obj) {
         var sound = new Audio(array[obj.name]);
