@@ -1,15 +1,134 @@
 <html>
 <head>
     <script src="bower_components/socket.io-client/socket.io.js"></script>
+
+    <style>
+        @import url(http://fonts.googleapis.com/css?family=Open+Sans);
+
+        .area{
+            text-align:center;
+            font-size:6.5em;
+            color:#fff;
+            letter-spacing: -7px;
+            font-weight:700;
+            text-transform:uppercase;
+            animation:blur .75s ease-out infinite;
+            text-shadow:0px 0px 5px #fff,
+            0px 0px 7px #fff;
+        }
+
+        html, body {
+            height: 100%;
+        }
+        body {
+            background:url("img/background.jpg") repeat;
+
+            margin: 0;
+        }
+        .flex-container {
+            height: 100%;
+            padding: 0;
+            margin: 0;
+            display: -webkit-box;
+            display: -moz-box;
+            display: -ms-flexbox;
+            display: -webkit-flex;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .row {
+            width: auto;
+Z        }
+        .flex-item {
+            background-color: tomato;
+            padding: 5px;
+            width: 20px;
+            height: 20px;
+            margin: 10px;
+            line-height: 20px;
+            color: white;
+            font-weight: bold;
+            font-size: 2em;
+            text-align: center;
+        }
+        @keyframes blur{
+            from{
+                text-shadow:0px 0px 10px #fff,
+                0px 0px 10px #fff,
+                0px 0px 10px #fff,
+                0px 0px 25px #fff,
+                0px 0px 25px #fff,
+                0px 0px 25px #fff,
+                0px 0px 25px #fff,
+                0px 0px 25px #fff,
+                0px 0px 25px #fff,
+                0px 0px 25px #fff,
+                0px 0px 25px #fff,
+                0px 0px 25px #fff,
+                0px 0px 25px #fff,
+                0px 0px 25px #fff,
+                0px 0px 25px #fff,
+                0px 0px 50px #fff,
+                0px 0px 50px #fff,
+                0px 0px 50px #7B96B8,
+                0px 0px 50px #fff,
+                0px 0px 50px #fff,
+                0px 0px 50px #7B96B8,
+                0px 0px 150px #7B96B8,
+                0px 0px 150px #7B96B8,
+                0px 10px 100px #7B96B8,
+                0px 10px 100px #7B96B8,
+                0px 10px 100px #7B96B8,
+                0px 10px 100px #7B96B8,
+                0px 10px 100px #7B96B8,
+                0px 10px 100px #7B96B8,
+                0px 10px 100px #7B96B8,
+                0px 10px 100px #7B96B8,
+                0px -10px 100px #7B96B8,
+                0px -10px 100px #7B96B8;
+            }
+        }
+
+    </style>
 </head>
 <body>
 
 <script>
 
-    var array = [];
+    function addQuestion() {
+        var r = Math.floor((Math.random() * arrayQuestions.length));
+        document.getElementById("question").innerHTML = arrayQuestions[r];
+        arrayQuestions.splice(r,1);
 
-    array["left"] = 'sounds/crickets.swf.mp3';
-    array["right"] = 'sounds/dramatic.swf.mp3';
+    }
+    function loadJSON(path, success, error)
+    {
+        var xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function()
+        {
+            if (xhr.readyState === XMLHttpRequest.DONE) {
+                if (xhr.status === 200) {
+                    if (success)
+                        success(JSON.parse(xhr.responseText));
+                } else {
+                    if (error)
+                        error(xhr);
+                }
+            }
+        };
+        xhr.open("GET", path, true);
+        xhr.send();
+    }
+
+    var questions = [];
+
+    var array = [];
+    var arrayPlaying = [];
+    var arrayQuestions = [];
+
+    array["left"] = 'sounds/johan_fuck_you.mp3';
+    array["right"] = 'sounds/johan_jorge.mp3';
     array["up"] = 'sounds/ha-gay.mp3';
     array["down"] = 'sounds/inceptionbutton.mp3';
     array["space"] = 'sounds/nooo.mp3';
@@ -19,12 +138,43 @@
     var keyboard = io.connect('http://ludobermejo.es:9100')
 
     keyboard.on('keypressed', function(obj) {
+        /*if(arrayPlaying[obj.name]) {
+            arrayPlaying[obj.name].pause(); arrayPlaying[obj.name].currentTime = 0;
+            arrayPlaying[obj.name].play();
+        } else {
+            var sound = new Audio(array[obj.name]);
+            arrayPlaying[obj.name] = sound;
+            sound.play();
+
+        }*/
+
         var sound = new Audio(array[obj.name]);
+        arrayPlaying[obj.name] = sound;
         sound.play();
+
+        sound.addEventListener('ended',function(){
+            addQuestion();
+        });
+
+    })
+
+    loadJSON("data/questions.json", function(data) {
+        arrayQuestions = data.questions;
+        addQuestion();
     })
 
 
-
 </script>
+<div class="flex-container">
+    <div class="row">
+        <div class="area" id="question">
+
+        </div>
+
+    </div>
+</div>
+
+
+</iframe>
 </body>
 </html>
