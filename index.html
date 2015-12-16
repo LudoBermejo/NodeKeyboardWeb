@@ -39,7 +39,7 @@
         }
         .row {
             width: auto;
-Z        }
+            Z        }
         .flex-item {
             background-color: tomato;
             padding: 5px;
@@ -98,28 +98,15 @@ Z        }
 
     function addQuestion() {
         var r = Math.floor((Math.random() * arrayQuestions.length));
-        document.getElementById("question").innerHTML = arrayQuestions[r];
+        document.getElementById("question").innerHTML = arrayQuestions[r].who + " says <br>" + arrayQuestions[r].what;
         arrayQuestions.splice(r,1);
 
+        if(arrayQuestions.length == 0) {
+            arrayQuestions = questions;
+        }
+
     }
-    function loadJSON(path, success, error)
-    {
-        var xhr = new XMLHttpRequest();
-        xhr.onreadystatechange = function()
-        {
-            if (xhr.readyState === XMLHttpRequest.DONE) {
-                if (xhr.status === 200) {
-                    if (success)
-                        success(JSON.parse(xhr.responseText));
-                } else {
-                    if (error)
-                        error(xhr);
-                }
-            }
-        };
-        xhr.open("GET", path, true);
-        xhr.send();
-    }
+
 
     var questions = [];
 
@@ -135,18 +122,31 @@ Z        }
     array["click"] = 'sounds/trollolol.swf.mp3';
 
 
-    var keyboard = io.connect('http://ludobermejo.es:9100')
+    var keyboard = io.connect('http://ludobermejo.es:9100');
+    //var keyboard = io.connect('http://localhost:9100')
+
+    keyboard.emit("getQuestions");
+
+    keyboard.on('listOfQuestions', function(obj) {
+        console.log("Got questions",obj)
+        questions = obj;
+        if(arrayQuestions.length == 0) {
+            arrayQuestions = obj;
+            addQuestion();
+        }
+    })
+
 
     keyboard.on('keypressed', function(obj) {
         /*if(arrayPlaying[obj.name]) {
-            arrayPlaying[obj.name].pause(); arrayPlaying[obj.name].currentTime = 0;
-            arrayPlaying[obj.name].play();
-        } else {
-            var sound = new Audio(array[obj.name]);
-            arrayPlaying[obj.name] = sound;
-            sound.play();
+         arrayPlaying[obj.name].pause(); arrayPlaying[obj.name].currentTime = 0;
+         arrayPlaying[obj.name].play();
+         } else {
+         var sound = new Audio(array[obj.name]);
+         arrayPlaying[obj.name] = sound;
+         sound.play();
 
-        }*/
+         }*/
 
         var sound = new Audio(array[obj.name]);
         arrayPlaying[obj.name] = sound;
@@ -156,11 +156,6 @@ Z        }
             addQuestion();
         });
 
-    })
-
-    loadJSON("data/questions.json", function(data) {
-        arrayQuestions = data.questions;
-        addQuestion();
     })
 
 

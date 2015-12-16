@@ -1,0 +1,45 @@
+<html>
+<head>
+    <script src="bower_components/socket.io-client/socket.io.js"></script>
+</head>
+<body>
+
+
+<a id="addQuestion" href="#">Add new question</a>
+<div class="form" id="form">
+    <label for="who">Who say what: </label> <input type="text" name="who" id="who">
+    <label for="what">What say who: </label> <input type="text" name="what" id="what">
+    <a id="sendQuestion" href="#">Send question</a>
+</div>
+
+<script>
+
+    function addQuestion() {
+        var r = Math.floor((Math.random() * arrayQuestions.length));
+        document.getElementById("what").innerHTML = arrayQuestions[r];
+        arrayQuestions.splice(r,1);
+
+    }
+
+
+    var keyboard = io.connect('http://ludobermejo.es:9100')
+    //var keyboard = io.connect('http://localhost:9100')
+
+
+    document.getElementById("form").style.display = "none";
+    document.getElementById("addQuestion").addEventListener("click", function() {
+        document.getElementById("form").style.display = "block";
+    })
+    document.getElementById("sendQuestion").addEventListener("click", function() {
+        document.getElementById("form").style.display = "none";
+        console.log(keyboard);
+        keyboard.emit( "newQuestion", {
+            who: document.getElementById("who").value,
+            what: document.getElementById("what").value
+        })
+    })
+
+</script>
+
+</body>
+</html>
