@@ -6,8 +6,9 @@ This is the webpage part of my NodeKeyboard app, a project that joins _Raspberry
 
 This is a part of a full project so you will need to download the other parts in:
   
-[NodeKeyboardServer, the node server (with sockets and moongose!)](https://github.com/LudoBermejo/NodeKeyboardSERVER)
-[NodeKeyboardAPP, the node app (sockets and makeymakey for the win!)](https://github.com/LudoBermejo/NodeKeyboardAPP)
+[NodeKeyboardServer, the node server with sockets and moongose!](https://github.com/LudoBermejo/NodeKeyboardSERVER)
+
+[NodeKeyboardAPP, the node app sockets and makeymakey for the win!](https://github.com/LudoBermejo/NodeKeyboardAPP)
 
 Then you must change the server (http://ludobermejo.es:9100) for the location you will run NodeKeyboardServer.
 
